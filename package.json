@@ -1,0 +1,9 @@
+{
+  "name": "my-youtube-study-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "fetch": "node scripts/fetch-videos.mjs",
+    "start": "node scripts/serve.mjs"
+  }
+}

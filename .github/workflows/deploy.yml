@@ -1,0 +1,44 @@
+# push したとき・毎朝6時（日本時間）・手動実行のときに、
+# 最新の動画を取得して GitHub Pages に公開する
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "0 21 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: 最新の動画を取得
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: |
+          if [ -n "$YOUTUBE_API_KEY" ]; then npm run fetch; else echo "Secret がないので、リポジトリ内の data/videos.js をそのまま使います"; fi
+      - name: 公開するファイルをまとめる
+        run: |
+          mkdir _site
+          cp -r index.html app.js style.css data _site/
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+      - id: deployment
+        uses: actions/deploy-pages@v4

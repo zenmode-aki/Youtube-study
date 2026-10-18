@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Study Tube</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📺</text></svg>">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">📺 <span>My Study Tube</span></div>
+      <nav id="nav"></nav>
+      <p class="fetched" id="fetched"></p>
+    </aside>
+
+    <main class="main">
+      <header class="toolbar">
+        <button class="menu-btn" id="menuBtn" aria-label="メニュー">☰</button>
+        <div class="search">
+          <input id="search" type="search" placeholder="タイトルで検索…" autocomplete="off">
+        </div>
+        <select id="sort" aria-label="並び順">
+          <option value="default">おすすめ順</option>
+          <option value="new">新しい順</option>
+          <option value="old">古い順</option>
+          <option value="views">再生回数順</option>
+          <option value="short">短い順</option>
+        </select>
+        <label class="toggle"><input type="checkbox" id="hideShorts"> ショートを隠す</label>
+        <label class="toggle"><input type="checkbox" id="hideWatched"> 視聴済みを隠す</label>
+      </header>
+
+      <section class="heading">
+        <h1 id="title">すべて</h1>
+        <p id="subtitle"></p>
+      </section>
+
+      <section class="grid" id="grid"></section>
+      <p class="empty" id="empty" hidden>動画が見つかりませんでした。</p>
+    </main>
+  </div>
+
+  <div class="player-backdrop" id="playerBackdrop" hidden>
+    <div class="player" role="dialog" aria-modal="true" aria-labelledby="playerTitle">
+      <div class="player-frame"><div id="ytPlayer"></div></div>
+      <div class="player-info">
+        <div>
+          <h2 id="playerTitle"></h2>
+          <p id="playerMeta"></p>
+        </div>
+        <button class="close" id="closePlayer" aria-label="閉じる">✕</button>
+      </div>
+      <div class="player-controls">
+        <div class="speeds" id="speeds"></div>
+        <div class="spacer"></div>
+        <button id="prevBtn">⏮ 前へ</button>
+        <button id="watchedBtn"></button>
+        <button id="nextBtn">次へ ⏭</button>
+        <label class="toggle"><input type="checkbox" id="autoNext" checked> 自動で次へ</label>
+      </div>
+    </div>
+  </div>
+
+  <script src="data/videos.js"></script>
+  <script src="app.js"></script>
+  <script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>

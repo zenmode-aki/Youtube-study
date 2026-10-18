@@ -1,0 +1,22 @@
+{
+  "categories": [
+    { "id": "kyoyo", "name": "教養", "icon": "📚" },
+    { "id": "programming", "name": "プログラミング", "icon": "💻" },
+    { "id": "work", "name": "仕事", "icon": "💼" },
+    { "id": "mental", "name": "メンタル", "icon": "🌿" },
+    { "id": "entame", "name": "エンタメ", "icon": "🎉" }
+  ],
+  "sources": [
+    { "type": "channel", "id": "UC8fTn4DsxlAlql3OXJ8syRA", "name": "海外Yパパ", "category": "kyoyo", "limit": "all" },
+    { "type": "channel", "id": "UCFy2R0BE58JGfJuM5jUd4Yg", "name": "本気AI", "category": "kyoyo", "limit": "all" },
+    { "type": "channel", "id": "UCvgu192Lj45KxguobrEt69g", "name": "Salesforceおたく", "category": "work", "limit": "all" },
+    { "type": "channel", "id": "UCgbjcHvWSPQ7en0LI5bMqJw", "name": "パンダの温度", "category": "mental", "limit": 30 },
+    { "type": "channel", "id": "UCwWhs_6x42TyRM4Wstoq8HA", "name": "The Daily Show", "category": "entame", "limit": 20 },
+    { "type": "channel", "id": "UCX6OQ3DkcsbYNE6H8uQQuVA", "name": "MrBeast", "category": "entame", "limit": 20 },
+
+    { "type": "playlist", "id": "PLT7vW4fTcu4dUNazEQmVD99ejZQ-GZuYF", "name": "ゼロからIT解説", "category": "programming", "limit": "all" },
+    { "type": "playlist", "id": "PLT7vW4fTcu4eRh59vJ_usjb9hG2QXpJo6", "name": "エンジニアに興味がある人へ", "category": "programming", "limit": "all" },
+    { "type": "playlist", "id": "PLT7vW4fTcu4d1TGf83WVdo89On-ifY__R", "name": "プログラミングを始める方へ", "category": "programming", "limit": "all" },
+    { "type": "playlist", "id": "PLT7vW4fTcu4e3AkZMepLgzFLx0biNPH-t", "name": "HTML/CSS", "category": "programming", "limit": "all" }
+  ]
+}

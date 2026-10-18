@@ -20,10 +20,11 @@ async function api(path, params) {
   return json;
 }
 
-// 再生リストから動画IDを取る（チャンネルは「アップロード動画」の再生リスト UU... を使う）
-async function playlistVideoIds(playlistId, limit) {
+// 再生リストから、ショートを除いた横向きの動画を limit 本ぶん集める
+// （チャンネルは「アップロード動画」の再生リスト UU... を使う）
+async function playlistVideos(playlistId, limit) {
   const max = limit === "all" ? Infinity : limit;
-  const ids = [];
+  const videos = [];
   let pageToken = "";
   do {
     const page = await api("playlistItems", {
@@ -32,13 +33,31 @@ async function playlistVideoIds(playlistId, limit) {
       maxResults: 50,
       ...(pageToken && { pageToken }),
     });
-    for (const item of page.items) {
-      if (item.status?.privacyStatus === "private") continue;
-      ids.push(item.contentDetails.videoId);
+    const ids = page.items
+      .filter((item) => item.status?.privacyStatus !== "private")
+      .map((item) => item.contentDetails.videoId);
+    const details = await videoDetails(ids);
+    const byId = new Map(details.map((v) => [v.id, v]));
+    for (const id of ids) {
+      const v = byId.get(id);
+      if (v && !v.live && v.duration > 0 && !(await isShort(v))) videos.push(v);
     }
     pageToken = page.nextPageToken;
-  } while (pageToken && ids.length < max);
-  return ids.slice(0, max);
+  } while (pageToken && videos.length < max);
+  return videos.slice(0, max);
+}
+
+// ショートは3分以内。youtube.com/shorts/ID が開ける（200）ならショート、
+// 普通の動画は watch ページへ転送（3xx）される
+async function isShort(v) {
+  if (/#shorts?\b/i.test(v.title)) return true;
+  if (v.duration > 180) return false;
+  try {
+    const res = await fetch(`https://www.youtube.com/shorts/${v.id}`, { method: "HEAD", redirect: "manual" });
+    if (res.status === 200) return true;
+    if (res.status >= 300 && res.status < 400) return false;
+  } catch {}
+  return v.duration <= 60;
 }
 
 function parseDuration(iso) {
@@ -73,11 +92,7 @@ async function videoDetails(ids) {
 const sources = [];
 for (const src of config.sources) {
   const playlistId = src.type === "channel" ? "UU" + src.id.slice(2) : src.id;
-  const ids = await playlistVideoIds(playlistId, src.limit);
-  const videos = await videoDetails(ids);
-  // API の返す順を、再生リストの並び順に戻す
-  const order = new Map(ids.map((id, i) => [id, i]));
-  videos.sort((a, b) => order.get(a.id) - order.get(b.id));
+  const videos = await playlistVideos(playlistId, src.limit);
   sources.push({ ...src, key: `${src.type}:${src.id}`, videos });
   console.log(`✔ ${src.name}: ${videos.length}本`);
 }

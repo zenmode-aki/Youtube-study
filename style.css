@@ -202,6 +202,7 @@ button { cursor: pointer; }
 .speeds button { padding: 6px 10px; }
 .speeds button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 #watchedBtn.on { background: var(--done); border-color: var(--done); color: #fff; }
+#repeatBtn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
 .spacer { flex: 1; }
 
 .theme-btn {

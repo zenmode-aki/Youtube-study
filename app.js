@@ -22,7 +22,7 @@ const saveProgress = () => store.set("study:progress", progress);
 const stats = store.get("study:stats", { sec: 0, bonus: 0, days: {} });
 const saveStats = () => store.set("study:stats", stats);
 const prefs = store.get("study:prefs", {});
-Object.assign(prefs, { speed: 1, hideWatched: false, autoNext: true, theme: "auto", sleepMin: 90, ...prefs });
+Object.assign(prefs, { speed: 1, hideWatched: false, autoNext: true, repeat: "off", theme: "auto", sleepMin: 90, ...prefs });
 const savePrefs = () => store.set("study:prefs", prefs);
 
 // ---------- 動画一覧を1つにまとめる ----------
@@ -264,7 +264,9 @@ window.onYouTubeIframeAPIReady = () => {
       if (e.data === YT.PlayerState.PLAYING) player.setPlaybackRate(prefs.speed);
       if (e.data === YT.PlayerState.ENDED) {
         markWatched(currentList[currentIndex], true);
-        if (prefs.autoNext) step(1);
+        if (prefs.repeat === "one") { lastT = null; player.seekTo(0, true); player.playVideo(); }
+        else if (prefs.repeat === "all" && currentIndex >= currentList.length - 1) openPlayer(0);
+        else if (prefs.autoNext || prefs.repeat === "all") step(1);
       }
     },
   });
@@ -368,6 +370,20 @@ $("watchedBtn").addEventListener("click", () => {
 });
 $("autoNext").checked = prefs.autoNext;
 $("autoNext").addEventListener("change", () => { prefs.autoNext = $("autoNext").checked; savePrefs(); });
+
+// リピート：なし → 1本をくり返す → 一覧をくり返す（最後まで行ったら最初へ）
+const REPEATS = { off: "🔁 リピートなし", one: "🔂 1本リピート", all: "🔁 全部リピート" };
+function renderRepeat() {
+  if (!REPEATS[prefs.repeat]) prefs.repeat = "off";
+  $("repeatBtn").textContent = REPEATS[prefs.repeat];
+  $("repeatBtn").classList.toggle("on", prefs.repeat !== "off");
+}
+$("repeatBtn").addEventListener("click", () => {
+  const keys = Object.keys(REPEATS);
+  prefs.repeat = keys[(keys.indexOf(prefs.repeat) + 1) % keys.length];
+  savePrefs();
+  renderRepeat();
+});
 
 function renderSpeeds() {
   $("speeds").innerHTML = SPEEDS.map((s) =>
@@ -494,4 +510,5 @@ window.addEventListener("beforeunload", () => { saveProgress(); saveStats(); });
 
 applyTheme();
 renderSpeeds();
+renderRepeat();
 render();

@@ -385,6 +385,49 @@ $("repeatBtn").addEventListener("click", () => {
   renderRepeat();
 });
 
+// スリープタイマー（ふつうのプレイヤー用）：押すたびに なし → 15分 → 30分 → 60分 → 90分。
+// 最後の1分で少しずつ音量を下げて、0分で止まる。リピートと組み合わせて、寝ながら聞ける
+const SLEEP_TIMER_STEPS = [0, 15, 30, 60, 90];
+const TIMER_FADE_SEC = 60;
+let sleepTimerMin = 0;
+let sleepTimerEndAt = 0;
+let sleepTimerTick = null;
+
+function renderSleepTimer() {
+  const btn = $("sleepTimerBtn");
+  if (!sleepTimerMin) { btn.textContent = "🌙 スリープ なし"; btn.classList.remove("on"); return; }
+  const left = Math.max(0, (sleepTimerEndAt - Date.now()) / 1000);
+  btn.textContent = `🌙 あと ${formatDuration(left)}`;
+  btn.classList.add("on");
+}
+function stopSleepTimer() {
+  clearInterval(sleepTimerTick);
+  sleepTimerMin = 0;
+  if (ready) player.setVolume(100);
+  renderSleepTimer();
+}
+function sleepTimerStep() {
+  const left = (sleepTimerEndAt - Date.now()) / 1000;
+  if (ready && left < TIMER_FADE_SEC) player.setVolume(Math.max(0, Math.round((left / TIMER_FADE_SEC) * 100)));
+  if (left <= 0) {
+    if (ready) player.pauseVideo();
+    stopSleepTimer();
+    toast("🌙 スリープタイマーで止めました。おやすみなさい");
+    return;
+  }
+  renderSleepTimer();
+}
+$("sleepTimerBtn").addEventListener("click", () => {
+  sleepTimerMin = SLEEP_TIMER_STEPS[(SLEEP_TIMER_STEPS.indexOf(sleepTimerMin) + 1) % SLEEP_TIMER_STEPS.length];
+  clearInterval(sleepTimerTick);
+  if (ready) player.setVolume(100);
+  if (sleepTimerMin) {
+    sleepTimerEndAt = Date.now() + sleepTimerMin * 60e3;
+    sleepTimerTick = setInterval(sleepTimerStep, 1000);
+  }
+  renderSleepTimer();
+});
+
 function renderSpeeds() {
   $("speeds").innerHTML = SPEEDS.map((s) =>
     `<button data-speed="${s}" class="${s === prefs.speed ? "active" : ""}">${s}x</button>`).join("");
@@ -511,4 +554,5 @@ window.addEventListener("beforeunload", () => { saveProgress(); saveStats(); });
 applyTheme();
 renderSpeeds();
 renderRepeat();
+renderSleepTimer();
 render();

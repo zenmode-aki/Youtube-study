@@ -341,11 +341,17 @@ window.onYouTubeIframeAPIReady = () => {
       if (pendingVideo) loadVideo(pendingVideo);
     },
     onStateChange: (e) => {
+      // YouTube 側で前後の動画へ移った（AirPods の2回タップ・プレイヤーの ⏭・最後まで再生）ら、こちらも追いかける
+      if (ytList) {
+        const i = ytList.ids.indexOf(player.getVideoData?.()?.video_id);
+        if (i >= 0 && i !== ytList.at) { const dir = i - ytList.at; ytList = null; step(dir); return; }
+      }
       // 歌と筋トレは音楽に合わせるので、速くせずにいつも1倍で流す
       if (e.data === YT.PlayerState.PLAYING) player.setPlaybackRate(keepNormalSpeed(currentList[currentIndex]) ? 1 : prefs.speed);
       if (e.data === YT.PlayerState.ENDED) {
         markWatched(currentList[currentIndex], true);
         if (prefs.repeat === "one") { lastT = null; player.seekTo(0, true); player.playVideo(); }
+        else if (ytList && ytList.at < ytList.ids.length - 1) {} // 次の動画へは YouTube が進む（上で追いかける）
         else if (prefs.repeat === "all" && pos >= order.length - 1) startPlayback(prefs.shuffle ? randomStart() : 0);
         else if (prefs.autoNext || prefs.repeat === "all") step(1);
       }
@@ -353,11 +359,21 @@ window.onYouTubeIframeAPIReady = () => {
   });
 };
 
+// 前・いま・次の3本を YouTube の再生リストとして渡す。こうするとプレイヤーに ⏭ が出て、
+// イヤホンの「次の曲」（AirPods の2回タップ）も効く。1本リピートと「自動で次へ」オフのときは1本だけ
+let ytList = null; // { ids: [前, いま, 次], at: いまの位置 }
 function loadVideo(v) {
   const p = progress[v.id];
   const start = p && !p.watched && p.t > 5 && p.t < (p.d || v.duration) - 10 ? Math.floor(p.t) : 0;
   lastT = null;
-  player.loadVideoById({ videoId: v.id, startSeconds: start });
+  const prev = currentList[order[pos - 1]], next = currentList[order[pos + 1]];
+  if (prefs.repeat !== "one" && (prefs.autoNext || prefs.repeat === "all") && (prev || next)) {
+    ytList = { ids: [prev?.id, v.id, next?.id].filter(Boolean), at: prev ? 1 : 0 };
+    player.loadPlaylist(ytList.ids, ytList.at, start);
+  } else {
+    ytList = null;
+    player.loadVideoById({ videoId: v.id, startSeconds: start });
+  }
 }
 
 // 一覧から1本選んで再生をはじめる（ここで順番を作り直す）

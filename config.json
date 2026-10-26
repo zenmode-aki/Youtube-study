@@ -23,6 +23,17 @@
 
     { "type": "playlist", "id": "PLBYwzo4wlAc-P2Vj-t-yLpuBEdc6eFelp", "name": "Mrs. GREEN APPLE", "category": "music", "limit": "all" },
 
+    { "type": "videos", "id": "mga-live", "name": "Mrs. GREEN APPLE（ライブ）", "category": "music",
+      "ids": [
+        "lJSISZKOAgw", "JizcHOTJgaA", "at3CEJvdg2I", "CHseQQ3WETU", "atJbRXERvH8", "9JPpdDo0o6U",
+        "a-0M7-gTVKQ", "sYMaoGflrug", "kSlK3Ip4yJY", "dSyUKb9U8Gw", "9UQQwRcHHQY", "NH21FTlVPes",
+        "z6x_Xk0WFko", "1q_B-yWMJA4", "6Ul-wFnquno", "4wukx6NpNBU", "i1wofkI11g8", "TFtKNUUsv4A",
+        "E3UDqofqcc4", "cBGzxjmRhTU", "aOMD7u0eWS8", "cL_IYboYdFc", "GpoJqwFkRcc", "mnQhQfQkoXM",
+        "mTx2gahMnr8", "WNcNOaUWRaU", "eZH90KLVSGc", "jhG2ixFvt74", "0HS3ZvAiiTU", "fCt6-dJq-To",
+        "WcwYTUNdZsY", "zGnBtnUAj_I", "C6SX7B1o-w4", "6a0S4hhMTis", "uEGDbikWhrU", "YSMw2mrIi-Q",
+        "wHkZfsQHaJo", "1viIey_6F0o", "h2bykFjZ94g", "MC7eEs_jXPM", "yyFr4vOCIME", "jqfYrmbQ1fo"
+      ] },
+
     { "type": "videos", "id": "squat", "name": "音楽でスクワット（竹脇まりな）", "category": "workout",
       "ids": ["4-DmXKf9Bqc", "1xh3QdobG7Y", "HjzRoLRngDE", "u0jaIWcN7Ak", "oC8UTa-puU4", "bN64wRGIUhE"] }
   ]

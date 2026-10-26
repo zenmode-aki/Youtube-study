@@ -275,7 +275,8 @@ window.onYouTubeIframeAPIReady = () => {
       if (pendingVideo) loadVideo(pendingVideo);
     },
     onStateChange: (e) => {
-      if (e.data === YT.PlayerState.PLAYING) player.setPlaybackRate(prefs.speed);
+      // 歌は速くするとおかしいので、いつも1倍で流す
+      if (e.data === YT.PlayerState.PLAYING) player.setPlaybackRate(isSong(currentList[currentIndex]) ? 1 : prefs.speed);
       if (e.data === YT.PlayerState.ENDED) {
         markWatched(currentList[currentIndex], true);
         if (prefs.repeat === "one") { lastT = null; player.seekTo(0, true); player.playVideo(); }

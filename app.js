@@ -303,6 +303,7 @@ function openPlayer(index) {
   $("playerMeta").textContent = `${v.source.name} · ${formatViews(v.views)} · ${new Date(v.publishedAt).toLocaleDateString("ja-JP")}`;
   $("prevBtn").disabled = index <= 0;
   $("nextBtn").disabled = index >= currentList.length - 1;
+  $("workoutLogBtn").hidden = v.source.category !== "workout";
   updatePlayerStatus();
   $("playerBackdrop").hidden = false;
   document.body.style.overflow = "hidden";

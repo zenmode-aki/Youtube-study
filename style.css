@@ -246,6 +246,10 @@ button { cursor: pointer; }
 .sleep-btn:has(+ .song-btn) { margin-bottom: 8px; }
 .song-btn { background: #4a2a3d; color: #ffe3f0; }
 .song-btn:hover, .song-btn.active { background: #5c3450; }
+.sleep-btn:has(+ .workout-log) { margin-bottom: 8px; }
+.workout-log { text-align: center; text-decoration: none; background: #1f3b31; color: #d8f5e8; }
+.workout-log:hover { background: #28503f; }
+.workout-log-inline { display: inline-flex; align-items: center; padding: 6px 12px; border-radius: 8px; background: #0b8a68; color: #fff; font-weight: 700; text-decoration: none; }
 
 .badge.pct { left: 6px; right: auto; background: var(--accent); }
 

@@ -24,7 +24,7 @@ const saveStats = () => store.set("study:stats", stats);
 const prefs = store.get("study:prefs", {});
 // workoutDays["2026-10-26"] = true：筋トレをやった日
 const workoutDays = store.get("study:workout", {});
-Object.assign(prefs, { speed: 1, hideWatched: false, autoNext: true, repeat: "off", theme: "auto", sleepMin: 90, ...prefs });
+Object.assign(prefs, { speed: 1, hideWatched: false, autoNext: true, repeat: "off", shuffle: false, theme: "auto", sleepMin: 90, ...prefs });
 const savePrefs = () => store.set("study:prefs", prefs);
 
 // ---------- 動画一覧を1つにまとめる ----------
@@ -111,6 +111,28 @@ function toast(message) {
 let view = store.get("study:view", { type: "all" });
 let currentList = [];
 let currentIndex = -1;
+
+// ---------- 再生の順番（ふつう / シャッフル） ----------
+// order：次に流す動画の番号（currentList の何番目か）を並べたもの。pos は今どこにいるか。
+// シャッフルのときは「まだ見ていない動画」を先に、見た動画はあとに、それぞれランダムに並べる
+const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+let order = [];
+let pos = 0;
+function buildOrder(startIndex) {
+  const all = currentList.map((_, i) => i);
+  if (!prefs.shuffle) { order = all; pos = Math.max(0, startIndex); return; }
+  const rest = all.filter((i) => i !== startIndex);
+  const seen = (i) => progress[currentList[i].id]?.watched;
+  order = [...(startIndex >= 0 ? [startIndex] : []), ...shuffle(rest.filter((i) => !seen(i))), ...shuffle(rest.filter(seen))];
+  pos = 0;
+}
+// シャッフルで最初に流す1本：まだ見ていない動画からランダムに（全部見ていたら全体から）
+function randomStart() {
+  const all = currentList.map((_, i) => i);
+  const fresh = all.filter((i) => !progress[currentList[i].id]?.watched);
+  const pool = fresh.length ? fresh : all;
+  return pool[Math.floor(Math.random() * pool.length)];
+}
 
 function viewInfo() {
   if (view.type === "category") {
@@ -271,6 +293,7 @@ function render() {
   const avg = list.length ? Math.round(list.reduce((n, v) => n + pctOf(v), 0) / list.length) : 0;
   $("subtitle").textContent = `${list.length}本 · 合計 約${Math.round(totalSec / 3600)}時間 · 視聴済み ${done}本 · 達成率 ${avg}%`;
   $("empty").hidden = list.length > 0;
+  $("shufflePlay").disabled = list.length < 2;
   $("grid").innerHTML = list.map((v, i) => {
     const watched = progress[v.id]?.watched;
     const pct = pctOf(v);
@@ -289,7 +312,7 @@ function render() {
 
 $("grid").addEventListener("click", (e) => {
   const card = e.target.closest(".card");
-  if (card) openPlayer(Number(card.dataset.index));
+  if (card) startPlayback(Number(card.dataset.index));
 });
 $("search").addEventListener("input", render);
 $("sort").addEventListener("change", render);
@@ -323,7 +346,7 @@ window.onYouTubeIframeAPIReady = () => {
       if (e.data === YT.PlayerState.ENDED) {
         markWatched(currentList[currentIndex], true);
         if (prefs.repeat === "one") { lastT = null; player.seekTo(0, true); player.playVideo(); }
-        else if (prefs.repeat === "all" && currentIndex >= currentList.length - 1) openPlayer(0);
+        else if (prefs.repeat === "all" && pos >= order.length - 1) startPlayback(prefs.shuffle ? randomStart() : 0);
         else if (prefs.autoNext || prefs.repeat === "all") step(1);
       }
     },
@@ -337,14 +360,20 @@ function loadVideo(v) {
   player.loadVideoById({ videoId: v.id, startSeconds: start });
 }
 
+// 一覧から1本選んで再生をはじめる（ここで順番を作り直す）
+function startPlayback(index) {
+  buildOrder(index);
+  openPlayer(index);
+}
+
 function openPlayer(index) {
   currentIndex = index;
   const v = currentList[index];
   if (!v) return;
   $("playerTitle").textContent = v.title;
   $("playerMeta").textContent = `${v.source.name} · ${formatViews(v.views)} · ${new Date(v.publishedAt).toLocaleDateString("ja-JP")}`;
-  $("prevBtn").disabled = index <= 0;
-  $("nextBtn").disabled = index >= currentList.length - 1;
+  $("prevBtn").disabled = pos <= 0;
+  $("nextBtn").disabled = pos >= order.length - 1;
   $("workoutLogBtn").hidden = v.source.category !== "workout";
   renderWorkout();
   updatePlayerStatus();
@@ -412,8 +441,8 @@ function updatePlayerStatus() {
 
 function step(dir) {
   saveProgress();
-  const next = currentIndex + dir;
-  if (next >= 0 && next < currentList.length) openPlayer(next);
+  const next = pos + dir;
+  if (next >= 0 && next < order.length) { pos = next; openPlayer(order[pos]); }
 }
 
 function closePlayer() {
@@ -441,6 +470,31 @@ $("watchedBtn").addEventListener("click", () => {
 });
 $("autoNext").checked = prefs.autoNext;
 $("autoNext").addEventListener("change", () => { prefs.autoNext = $("autoNext").checked; savePrefs(); });
+
+// シャッフル：押すたびに オン ⇄ オフ。再生中に切りかえたら、今の動画のあとから新しい順番になる
+function renderShuffle() {
+  $("shuffleBtn").textContent = prefs.shuffle ? "🔀 シャッフル中" : "🔀 シャッフル";
+  $("shuffleBtn").classList.toggle("on", !!prefs.shuffle);
+}
+$("shuffleBtn").addEventListener("click", () => {
+  prefs.shuffle = !prefs.shuffle;
+  savePrefs();
+  renderShuffle();
+  if (currentIndex >= 0) {
+    buildOrder(currentIndex);
+    $("prevBtn").disabled = pos <= 0;
+    $("nextBtn").disabled = pos >= order.length - 1;
+  }
+  toast(prefs.shuffle ? "🔀 シャッフルにしました（まだ見ていない動画から先に流します）" : "▶ 順番どおりに戻しました");
+});
+// 一覧の上の「シャッフル再生」：今の一覧をシャッフルして、すぐ流しはじめる
+$("shufflePlay").addEventListener("click", () => {
+  if (!currentList.length) return;
+  prefs.shuffle = true;
+  savePrefs();
+  renderShuffle();
+  startPlayback(randomStart());
+});
 
 // リピート：なし → 1本をくり返す → 一覧をくり返す（最後まで行ったら最初へ）
 const REPEATS = { off: "🔁 リピートなし", one: "🔂 1本リピート", all: "🔁 全部リピート" };
@@ -528,7 +582,6 @@ let sleepShowVideo = false;
 
 function sleepOrder() {
   // まだ流していない動画を先に、それぞれシャッフル
-  const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const played = new Set(sleepHistory);
   return [...shuffle(sleepVideos.filter((v) => !played.has(v.id))), ...shuffle(sleepVideos.filter((v) => played.has(v.id)))];
 }
@@ -624,6 +677,7 @@ window.addEventListener("beforeunload", () => { saveProgress(); saveStats(); });
 
 applyTheme();
 renderSpeeds();
+renderShuffle();
 renderRepeat();
 renderSleepTimer();
 render();

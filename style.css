@@ -120,6 +120,18 @@ button { cursor: pointer; }
 .toggle { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); white-space: nowrap; }
 
 .heading h1 { margin: 8px 0 2px; font-size: 22px; }
+.heading-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.shuffle-play {
+  border: 0;
+  background: var(--accent);
+  color: #fff;
+  border-radius: 999px;
+  padding: 7px 16px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.shuffle-play:hover { filter: brightness(1.1); }
+.shuffle-play:disabled { opacity: .4; cursor: default; filter: none; }
 .heading p { margin: 0 0 18px; color: var(--muted); }
 
 .grid {
@@ -202,6 +214,7 @@ button { cursor: pointer; }
 .speeds button { padding: 6px 10px; }
 .speeds button.active { background: var(--accent); border-color: var(--accent); color: #fff; }
 #watchedBtn.on { background: var(--done); border-color: var(--done); color: #fff; }
+#shuffleBtn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
 #repeatBtn.on { background: var(--accent); border-color: var(--accent); color: #fff; }
 #sleepTimerBtn { font-variant-numeric: tabular-nums; }
 #sleepTimerBtn.on { background: #2d3160; border-color: #3d4280; color: #e3e5ff; }
@@ -252,6 +265,7 @@ button { cursor: pointer; }
 /* 筋トレの画面の上に出す連続記録 */
 .workout-panel { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; margin: 0 0 20px; padding: 16px 20px; border-radius: 14px; border: 2px solid var(--line); }
 .workout-panel.done { border-color: #0b8a68; }
+.workout-panel[hidden] { display: none; }
 .wp-streak { display: flex; align-items: baseline; gap: 6px; }
 .wp-streak b { font-size: 3rem; line-height: 1; color: #e4602b; font-variant-numeric: tabular-nums; }
 .wp-streak span { font-weight: 800; }

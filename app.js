@@ -22,6 +22,8 @@ const saveProgress = () => store.set("study:progress", progress);
 const stats = store.get("study:stats", { sec: 0, bonus: 0, days: {} });
 const saveStats = () => store.set("study:stats", stats);
 const prefs = store.get("study:prefs", {});
+// workoutDays["2026-10-26"] = true：筋トレをやった日
+const workoutDays = store.get("study:workout", {});
 Object.assign(prefs, { speed: 1, hideWatched: false, autoNext: true, repeat: "off", theme: "auto", sleepMin: 90, ...prefs });
 const savePrefs = () => store.set("study:prefs", prefs);
 
@@ -136,6 +138,45 @@ function viewInfo() {
   return { title: "🏠 すべて", videos: [...allVideos].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)) };
 }
 
+// ---------- 筋トレの連続記録 ----------
+const isWorkoutView = () =>
+  (view.type === "category" && view.id === "workout") ||
+  (view.type === "source" && DATA.sources.find((s) => s.key === view.id)?.category === "workout");
+const shiftDay = (key, n) => { const d = new Date(key + "T12:00:00"); d.setDate(d.getDate() + n); return d.toLocaleDateString("sv-SE"); };
+// 今日やっていれば今日から、まだなら昨日から、さかのぼって続いている日数
+function workoutStreak() {
+  let k = workoutDays[today()] ? today() : shiftDay(today(), -1), n = 0;
+  while (workoutDays[k]) { n++; k = shiftDay(k, -1); }
+  return n;
+}
+function setWorkoutToday(done) {
+  if (done) workoutDays[today()] = true; else delete workoutDays[today()];
+  store.set("study:workout", workoutDays);
+  if (done) toast(`💪 今日の筋トレを記録しました！ ${workoutStreak()}日連続 🔥`);
+  renderWorkout();
+}
+function renderWorkout() {
+  const done = !!workoutDays[today()];
+  const streak = workoutStreak();
+  $("workoutPanel").hidden = !isWorkoutView();
+  $("workoutPanel").classList.toggle("done", done);
+  $("wpStreak").textContent = streak;
+  $("wpSub").textContent = done ? "今日もやった！ この調子" : streak ? "今日やれば、もう1日のびる" : "今日から1日目をはじめよう";
+  // 直近14日：やった日が緑、今日はオレンジの枠
+  $("wpDays").innerHTML = Array.from({ length: 14 }, (_, i) => {
+    const k = shiftDay(today(), i - 13);
+    return `<span class="${workoutDays[k] ? "on" : ""}${k === today() ? " today" : ""}" title="${k}">${Number(k.slice(8))}</span>`;
+  }).join("");
+  const keys = Object.keys(workoutDays);
+  $("wpStats").textContent = `今月 ${keys.filter((k) => k.startsWith(today().slice(0, 7))).length}日 · ぜんぶで ${keys.length}日`;
+  $("wpCheck").textContent = done ? "今日のチェックをはずす" : "✅ 今日やった！";
+  $("wpCheck").classList.toggle("done", done);
+  $("workoutLogBtn").textContent = done ? "💪 今日は記録ずみ" : "💪 今日やった！";
+  $("workoutLogBtn").classList.toggle("done", done);
+}
+$("wpCheck").addEventListener("click", () => setWorkoutToday(!workoutDays[today()]));
+$("workoutLogBtn").addEventListener("click", () => setWorkoutToday(!workoutDays[today()]));
+
 // ---------- サイドバー ----------
 function renderNav() {
   const count = (fn) => allVideos.filter(fn).length;
@@ -221,6 +262,7 @@ function filteredVideos() {
 function render() {
   renderNav();
   renderPoints();
+  renderWorkout();
   const { title, list } = filteredVideos();
   currentList = list;
   $("title").textContent = title;
@@ -304,6 +346,7 @@ function openPlayer(index) {
   $("prevBtn").disabled = index <= 0;
   $("nextBtn").disabled = index >= currentList.length - 1;
   $("workoutLogBtn").hidden = v.source.category !== "workout";
+  renderWorkout();
   updatePlayerStatus();
   $("playerBackdrop").hidden = false;
   document.body.style.overflow = "hidden";
@@ -350,6 +393,8 @@ function markWatched(v, watched) {
     p.bonus = true;
     addBonus(FINISH_BONUS, `✓ 見終わりました！ +${FINISH_BONUS}pt`);
   }
+  // 筋トレの動画を見終わったら、今日の筋トレも自動でチェック
+  if (watched && v.source.category === "workout" && !workoutDays[today()]) setWorkoutToday(true);
   saveProgress();
   updatePlayerStatus();
 }

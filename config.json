@@ -1,12 +1,12 @@
 {
   "categories": [
+    { "id": "workout", "name": "筋トレ", "icon": "💪" },
     { "id": "kyoyo", "name": "教養", "icon": "📚" },
     { "id": "programming", "name": "プログラミング", "icon": "💻" },
     { "id": "work", "name": "仕事", "icon": "💼" },
     { "id": "mental", "name": "メンタル", "icon": "🌿" },
     { "id": "entame", "name": "エンタメ", "icon": "🎉" },
-    { "id": "music", "name": "音楽", "icon": "🎵" },
-    { "id": "workout", "name": "筋トレ", "icon": "💪" }
+    { "id": "music", "name": "音楽", "icon": "🎵" }
   ],
   "sources": [
     { "type": "channel", "id": "UC8fTn4DsxlAlql3OXJ8syRA", "name": "海外Yパパ", "category": "kyoyo", "limit": "all", "sleep": true },

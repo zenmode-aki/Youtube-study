@@ -25,7 +25,6 @@
       <div class="points" id="points"></div>
       <button class="sleep-btn" id="sleepBtn">🌙 おやすみモード</button>
       <button class="sleep-btn song-btn" id="songBtn">🎵 歌</button>
-      <a class="sleep-btn workout-log" href="https://claude.ai/artifact/WYdsJQodzEUTAvZjo5J7UA" target="_blank" rel="noopener">💪 筋トレ記録をつける</a>
       <nav id="nav"></nav>
       <p class="fetched" id="fetched"></p>
     </aside>
@@ -50,6 +49,16 @@
       <section class="heading">
         <h1 id="title">すべて</h1>
         <p id="subtitle"></p>
+      </section>
+
+      <section class="workout-panel" id="workoutPanel" hidden>
+        <div class="wp-streak"><b id="wpStreak">0</b><span>日連続 🔥</span></div>
+        <div class="wp-main">
+          <p class="wp-sub" id="wpSub"></p>
+          <div class="wp-days" id="wpDays"></div>
+          <p class="wp-stats" id="wpStats"></p>
+        </div>
+        <button class="wp-check" id="wpCheck"></button>
       </section>
 
       <section class="grid" id="grid"></section>
@@ -77,7 +86,7 @@
         <button id="nextBtn">次へ ⏭</button>
         <button id="repeatBtn"></button>
         <button id="sleepTimerBtn"></button>
-        <a id="workoutLogBtn" class="workout-log-inline" href="https://claude.ai/artifact/WYdsJQodzEUTAvZjo5J7UA" target="_blank" rel="noopener" hidden>💪 やった！を記録</a>
+        <button id="workoutLogBtn" class="workout-log-inline" hidden></button>
         <label class="toggle"><input type="checkbox" id="autoNext" checked> 自動で次へ</label>
       </div>
     </div>

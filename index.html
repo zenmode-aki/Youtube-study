@@ -12,6 +12,10 @@
       if (t === "light" || t === "dark") document.documentElement.dataset.theme = t;
     } catch {}
   </script>
+  <!-- 動画を押してから流れるまでを少しでも速くするため、YouTube に先につないでおく -->
+  <link rel="preconnect" href="https://www.youtube-nocookie.com">
+  <link rel="preconnect" href="https://www.youtube.com">
+  <link rel="preconnect" href="https://i.ytimg.com">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>

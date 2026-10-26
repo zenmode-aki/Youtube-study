@@ -447,6 +447,11 @@ $("speeds").addEventListener("click", (e) => {
 const SLEEP_MINUTES = [30, 60, 90, 120];
 const FADE_SEC = 5 * 60; // 最後の5分で音量を少しずつ下げる
 const sleepVideos = allVideos.filter((v) => v.source.sleep);
+// 歌モード：おやすみモードと同じチャンネルから、題名で歌の動画だけを抜き出してシャッフル再生する
+const SONG_RE = /歌|ソング|MV|ミュージカル|ラップ|【音楽のみ】/;
+const songVideos = sleepVideos.filter((v) => SONG_RE.test(v.title));
+let songMode = false;
+if (!songVideos.length) $("songBtn").remove();
 const sleepHistory = store.get("study:sleepHistory", []); // 最近おやすみモードで流した動画ID
 let sleepPlayer = null;
 let sleepQueue = [];
@@ -455,9 +460,9 @@ let sleepEndAt = 0;
 let sleepTimer = null;
 let sleepShowVideo = false;
 
+const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
 function sleepOrder() {
   // まだ流していない動画を先に、それぞれシャッフル
-  const shuffle = (a) => { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
   const played = new Set(sleepHistory);
   return [...shuffle(sleepVideos.filter((v) => !played.has(v.id))), ...shuffle(sleepVideos.filter((v) => played.has(v.id)))];
 }
@@ -484,13 +489,24 @@ $("sleepBtn").addEventListener("click", () => {
   document.body.style.overflow = "hidden";
 });
 
-$("sleepStart").addEventListener("click", () => {
-  sleepQueue = sleepOrder();
+$("sleepStart").addEventListener("click", () => startSleep(false));
+$("songBtn").addEventListener("click", () => {
+  $("sidebar").classList.remove("open");
+  $("sleep").hidden = false;
+  document.body.style.overflow = "hidden";
+  startSleep(true);
+});
+
+function startSleep(songs) {
+  songMode = songs;
+  sleepQueue = songs ? shuffle([...songVideos]) : sleepOrder();
   sleepIndex = 0;
-  sleepEndAt = Date.now() + prefs.sleepMin * 60e3;
+  // 歌モードはタイマーなしで、終了を押すまで歌をくり返す
+  sleepEndAt = songs ? Infinity : Date.now() + prefs.sleepMin * 60e3;
   $("sleepSetup").hidden = true;
   $("sleepPlaying").hidden = false;
-  $("sleep").classList.toggle("show-video", sleepShowVideo);
+  $("sleep").classList.toggle("show-video", songs || sleepShowVideo);
+  $("sleepToggleVideo").textContent = songs || sleepShowVideo ? "画面を消す" : "映像を表示";
   const startFirst = () => playSleepVideo();
   if (sleepPlayer) startFirst();
   else sleepPlayer = createPlayer("sleepYt", {
@@ -499,15 +515,17 @@ $("sleepStart").addEventListener("click", () => {
     onError: () => nextSleepVideo(),
   });
   clearInterval(sleepTimer);
+  if (songs) { $("sleepClock").textContent = `🎵 ${songVideos.length}曲をシャッフル`; return; }
   sleepTimer = setInterval(sleepTick, 1000);
   sleepTick();
-});
+}
 
 function playSleepVideo() {
   const v = sleepQueue[sleepIndex % sleepQueue.length];
   sleepPlayer.setVolume(100);
   sleepPlayer.loadVideoById(v.id);
   $("sleepTitle").textContent = v.title;
+  if (songMode) return;
   sleepHistory.unshift(v.id);
   store.set("study:sleepHistory", [...new Set(sleepHistory)].slice(0, 300));
 }
@@ -539,9 +557,10 @@ $("sleepSkip").addEventListener("click", () => { sleepIndex++; playSleepVideo();
 $("sleepStop").addEventListener("click", stopSleep);
 $("sleepCancel").addEventListener("click", stopSleep);
 $("sleepToggleVideo").addEventListener("click", () => {
-  sleepShowVideo = !sleepShowVideo;
-  $("sleep").classList.toggle("show-video", sleepShowVideo);
-  $("sleepToggleVideo").textContent = sleepShowVideo ? "画面を消す" : "映像を表示";
+  const show = !$("sleep").classList.contains("show-video");
+  if (!songMode) sleepShowVideo = show;
+  $("sleep").classList.toggle("show-video", show);
+  $("sleepToggleVideo").textContent = show ? "画面を消す" : "映像を表示";
 });
 
 // ---------- 共通 ----------

@@ -245,7 +245,7 @@ button { cursor: pointer; }
 .sleep-btn:hover { background: #2d3160; }
 .sleep-btn:has(+ .song-btn) { margin-bottom: 8px; }
 .song-btn { background: #4a2a3d; color: #ffe3f0; }
-.song-btn:hover { background: #5c3450; }
+.song-btn:hover, .song-btn.active { background: #5c3450; }
 
 .badge.pct { left: 6px; right: auto; background: var(--accent); }
 

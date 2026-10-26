@@ -40,6 +40,7 @@ const inProgress = (v) => !progress[v.id]?.watched && pctOf(v) > 0;
 // 歌：「音楽」の分類の動画と、おやすみモードのチャンネル（海外Yパパ）で題名が歌っぽい動画
 const SONG_RE = /歌|ソング|MV|ミュージカル|ラップ|【音楽のみ】/;
 const isSong = (v) => v.source.category === "music" || (v.source.sleep && SONG_RE.test(v.title));
+const keepNormalSpeed = (v) => isSong(v) || v.source.category === "workout";
 const songVideos = [...new Map(allVideos.filter(isSong).map((v) => [v.id, v])).values()];
 
 // ---------- テーマ（自動 / ライト / ダーク） ----------
@@ -275,8 +276,8 @@ window.onYouTubeIframeAPIReady = () => {
       if (pendingVideo) loadVideo(pendingVideo);
     },
     onStateChange: (e) => {
-      // 歌は速くするとおかしいので、いつも1倍で流す
-      if (e.data === YT.PlayerState.PLAYING) player.setPlaybackRate(isSong(currentList[currentIndex]) ? 1 : prefs.speed);
+      // 歌と筋トレは音楽に合わせるので、速くせずにいつも1倍で流す
+      if (e.data === YT.PlayerState.PLAYING) player.setPlaybackRate(keepNormalSpeed(currentList[currentIndex]) ? 1 : prefs.speed);
       if (e.data === YT.PlayerState.ENDED) {
         markWatched(currentList[currentIndex], true);
         if (prefs.repeat === "one") { lastT = null; player.seekTo(0, true); player.playVideo(); }

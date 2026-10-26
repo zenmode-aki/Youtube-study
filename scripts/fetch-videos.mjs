@@ -91,8 +91,9 @@ async function videoDetails(ids) {
 
 const sources = [];
 for (const src of config.sources) {
+  // type "videos" は、ids に書いた動画を1本ずつ入れる
   const playlistId = src.type === "channel" ? "UU" + src.id.slice(2) : src.id;
-  const videos = await playlistVideos(playlistId, src.limit);
+  const videos = src.type === "videos" ? await videoDetails(src.ids) : await playlistVideos(playlistId, src.limit);
   sources.push({ ...src, key: `${src.type}:${src.id}`, videos });
   console.log(`✔ ${src.name}: ${videos.length}本`);
 }

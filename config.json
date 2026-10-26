@@ -5,7 +5,8 @@
     { "id": "work", "name": "仕事", "icon": "💼" },
     { "id": "mental", "name": "メンタル", "icon": "🌿" },
     { "id": "entame", "name": "エンタメ", "icon": "🎉" },
-    { "id": "music", "name": "音楽", "icon": "🎵" }
+    { "id": "music", "name": "音楽", "icon": "🎵" },
+    { "id": "workout", "name": "筋トレ", "icon": "💪" }
   ],
   "sources": [
     { "type": "channel", "id": "UC8fTn4DsxlAlql3OXJ8syRA", "name": "海外Yパパ", "category": "kyoyo", "limit": "all", "sleep": true },
@@ -20,6 +21,9 @@
     { "type": "playlist", "id": "PLT7vW4fTcu4d1TGf83WVdo89On-ifY__R", "name": "プログラミングを始める方へ", "category": "programming", "limit": "all" },
     { "type": "playlist", "id": "PLT7vW4fTcu4e3AkZMepLgzFLx0biNPH-t", "name": "HTML/CSS", "category": "programming", "limit": "all" },
 
-    { "type": "playlist", "id": "PLBYwzo4wlAc-P2Vj-t-yLpuBEdc6eFelp", "name": "Mrs. GREEN APPLE", "category": "music", "limit": "all" }
+    { "type": "playlist", "id": "PLBYwzo4wlAc-P2Vj-t-yLpuBEdc6eFelp", "name": "Mrs. GREEN APPLE", "category": "music", "limit": "all" },
+
+    { "type": "videos", "id": "squat", "name": "音楽でスクワット（竹脇まりな）", "category": "workout",
+      "ids": ["4-DmXKf9Bqc", "1xh3QdobG7Y", "HjzRoLRngDE", "u0jaIWcN7Ak", "oC8UTa-puU4", "bN64wRGIUhE"] }
   ]
 }

@@ -35,6 +35,8 @@
       ] },
 
     { "type": "videos", "id": "squat", "name": "音楽でスクワット（竹脇まりな）", "category": "workout",
-      "ids": ["4-DmXKf9Bqc", "1xh3QdobG7Y", "HjzRoLRngDE", "u0jaIWcN7Ak", "oC8UTa-puU4", "bN64wRGIUhE"] }
+      "ids": ["4-DmXKf9Bqc", "1xh3QdobG7Y", "HjzRoLRngDE", "u0jaIWcN7Ak", "oC8UTa-puU4", "bN64wRGIUhE"] },
+    { "type": "videos", "id": "workout-fav", "name": "お気に入りの筋トレ", "category": "workout",
+      "ids": ["D6J_dJrAQMI", "1pG0vMH98jI", "RmRBkt7i3FE"] }
   ]
 }

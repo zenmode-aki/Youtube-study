@@ -21,9 +21,9 @@
     { "type": "playlist", "id": "PLT7vW4fTcu4d1TGf83WVdo89On-ifY__R", "name": "プログラミングを始める方へ", "category": "programming", "limit": "all" },
     { "type": "playlist", "id": "PLT7vW4fTcu4e3AkZMepLgzFLx0biNPH-t", "name": "HTML/CSS", "category": "programming", "limit": "all" },
 
-    { "type": "playlist", "id": "PLBYwzo4wlAc-P2Vj-t-yLpuBEdc6eFelp", "name": "Mrs. GREEN APPLE", "category": "music", "limit": "all" },
+    { "type": "playlist", "id": "PLBYwzo4wlAc-P2Vj-t-yLpuBEdc6eFelp", "name": "Mrs. GREEN APPLE", "artist": "Mrs. GREEN APPLE", "category": "music", "limit": "all", "since": "2023-01-01", "minViews": 10000000 },
 
-    { "type": "videos", "id": "mga-live", "name": "Mrs. GREEN APPLE（ライブ）", "category": "music",
+    { "type": "videos", "id": "mga-live", "name": "Mrs. GREEN APPLE（ライブ）", "artist": "Mrs. GREEN APPLE", "category": "music", "since": "2023-01-01", "minViews": 10000000,
       "ids": [
         "lJSISZKOAgw", "JizcHOTJgaA", "at3CEJvdg2I", "CHseQQ3WETU", "atJbRXERvH8", "9JPpdDo0o6U",
         "a-0M7-gTVKQ", "sYMaoGflrug", "kSlK3Ip4yJY", "dSyUKb9U8Gw", "9UQQwRcHHQY", "NH21FTlVPes",
@@ -33,6 +33,20 @@
         "WcwYTUNdZsY", "zGnBtnUAj_I", "C6SX7B1o-w4", "6a0S4hhMTis", "uEGDbikWhrU", "YSMw2mrIi-Q",
         "wHkZfsQHaJo", "1viIey_6F0o", "h2bykFjZ94g", "MC7eEs_jXPM", "yyFr4vOCIME", "jqfYrmbQ1fo"
       ] },
+
+    { "type": "channel", "id": "UC0C-w0YjGpqDXGB8IHb662A", "name": "Ed Sheeran", "artist": "Ed Sheeran", "category": "music", "limit": "all", "minViews": 10000000, "titleMatch": true },
+    { "type": "channel", "id": "UCfLdIEPs1tYj4ieEdJnyNyw", "name": "Lauv", "artist": "Lauv", "category": "music", "limit": "all", "minViews": 10000000, "titleMatch": true },
+    { "type": "channel", "id": "UCHkj014U2CQ2Nv0UZeYpE_A", "name": "Justin Bieber", "artist": "Justin Bieber", "category": "music", "limit": "all", "minViews": 10000000, "titleMatch": true },
+    { "type": "channel", "id": "UCwppdrjsBPAZg5_cUwQjfMQ", "name": "Charlie Puth", "artist": "Charlie Puth", "category": "music", "limit": "all", "minViews": 10000000, "titleMatch": true },
+    { "type": "channel", "id": "UCV-UW3I3mXakSoqV8SpF1sg", "name": "Owl City", "artist": "Owl City", "category": "music", "limit": "all", "minViews": 10000000, "titleMatch": true },
+    { "type": "channel", "id": "UCfcuj5fOkdBhosiEwBuP78A", "name": "John K", "artist": "John K", "category": "music", "limit": "all", "minViews": 10000000, "titleMatch": true },
+    { "type": "channel", "id": "UCgJMQU7JOIoP-YnrhH_P-bA", "name": "Why Don't We", "artist": "Why Don't We", "category": "music", "limit": "all", "minViews": 10000000, "titleMatch": true },
+    { "type": "channel", "id": "UC3IZKseVpdzPSBaWxBxundA", "name": "ILLIT", "artist": "ILLIT", "category": "music", "limit": "all", "minViews": 10000000, "titleMatch": "ILLIT.*(Official MV|M/V)" },
+    { "type": "channel", "id": "UCRIgIJQWuBJ0Cv_VlU3USNA", "name": "ヨルシカ", "artist": "ヨルシカ", "category": "music", "limit": "all", "minViews": 10000000, "titleMatch": "any" },
+    { "type": "channel", "id": "UC3vg17IZ1IV73xx069jG44w", "name": "Official髭男dism", "artist": "Official髭男dism", "category": "music", "limit": "all", "minViews": 10000000, "titleMatch": "any" },
+    { "type": "channel", "id": "UCNIy6zQyP7SuLEIaiwymfUA", "name": "藤井 風", "artist": "藤井 風", "category": "music", "limit": "all", "minViews": 10000000, "titleMatch": "any" },
+    { "type": "channel", "id": "UCUCeZaZeJbEYAAzvMgrKOPQ", "name": "米津玄師", "artist": "米津玄師", "category": "music", "limit": "all", "minViews": 10000000, "titleMatch": "any" },
+    { "type": "channel", "id": "UCR3r-lCLAtrTcr1IvQVQycA", "name": "eill", "artist": "eill", "category": "music", "limit": "all", "minViews": 10000000, "titleMatch": "any" },
 
     { "type": "videos", "id": "squat", "name": "音楽でスクワット（竹脇まりな）", "category": "workout",
       "ids": ["4-DmXKf9Bqc", "1xh3QdobG7Y", "HjzRoLRngDE", "u0jaIWcN7Ak", "oC8UTa-puU4", "bN64wRGIUhE"] },

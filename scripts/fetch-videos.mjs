@@ -20,9 +20,23 @@ async function api(path, params) {
   return json;
 }
 
+// config の minViews（再生回数）・since（この日以降）・titleMatch（題名）で絞る。
+// titleMatch: true は「Official Video・MV」などの題名だけ、"any" は題名で絞らない、文字列は正規表現
+const MV_TITLE = "official (music |lyric )?video|\\bMV\\b|music video";
+const NOT_MV = /teaser|trailer|behind the scenes|making|reaction|dance practice|#shorts?\b/i;
+function keepFor(src) {
+  const re = typeof src.titleMatch === "string" && src.titleMatch !== "any" ? new RegExp(src.titleMatch, "i")
+    : src.titleMatch === true ? new RegExp(MV_TITLE, "i") : null;
+  return (v) =>
+    (!src.minViews || v.views >= src.minViews) &&
+    (!src.since || v.publishedAt >= src.since) &&
+    (!re || re.test(v.title)) &&
+    (!src.titleMatch || !NOT_MV.test(v.title));
+}
+
 // 再生リストから、ショートを除いた横向きの動画を limit 本ぶん集める
 // （チャンネルは「アップロード動画」の再生リスト UU... を使う）
-async function playlistVideos(playlistId, limit) {
+async function playlistVideos(playlistId, limit, keep = () => true) {
   const max = limit === "all" ? Infinity : limit;
   const videos = [];
   let pageToken = "";
@@ -40,7 +54,7 @@ async function playlistVideos(playlistId, limit) {
     const byId = new Map(details.map((v) => [v.id, v]));
     for (const id of ids) {
       const v = byId.get(id);
-      if (v && !v.live && v.duration > 0 && !(await isShort(v))) videos.push(v);
+      if (v && keep(v) && !v.live && v.duration > 0 && !(await isShort(v))) videos.push(v);
     }
     pageToken = page.nextPageToken;
   } while (pageToken && videos.length < max);
@@ -93,7 +107,8 @@ const sources = [];
 for (const src of config.sources) {
   // type "videos" は、ids に書いた動画を1本ずつ入れる
   const playlistId = src.type === "channel" ? "UU" + src.id.slice(2) : src.id;
-  const videos = src.type === "videos" ? await videoDetails(src.ids) : await playlistVideos(playlistId, src.limit);
+  const keep = keepFor(src);
+  const videos = src.type === "videos" ? (await videoDetails(src.ids)).filter(keep) : await playlistVideos(playlistId, src.limit, keep);
   sources.push({ ...src, key: `${src.type}:${src.id}`, videos });
   console.log(`✔ ${src.name}: ${videos.length}本`);
 }

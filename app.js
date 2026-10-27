@@ -42,6 +42,7 @@ const inProgress = (v) => !progress[v.id]?.watched && pctOf(v) > 0;
 // 歌：「音楽」の分類の動画と、おやすみモードのチャンネル（海外Yパパ）で題名が歌っぽい動画
 const SONG_RE = /歌|ソング|MV|ミュージカル|ラップ|【音楽のみ】/;
 const isSong = (v) => v.source.category === "music" || (v.source.sleep && SONG_RE.test(v.title));
+const artistOf = (v) => v.source.artist || v.source.name;
 const keepNormalSpeed = (v) => isSong(v) || v.source.category === "workout";
 const songVideos = [...new Map(allVideos.filter(isSong).map((v) => [v.id, v])).values()];
 
@@ -143,7 +144,10 @@ function viewInfo() {
     const s = DATA.sources.find((s) => s.key === view.id);
     if (s) return { title: s.name, videos: allVideos.filter((v) => v.source === s) };
   }
-  if (view.type === "songs") return { title: "🎵 歌", videos: songVideos };
+  if (view.type === "songs") {
+    const videos = view.artist ? songVideos.filter((v) => artistOf(v) === view.artist) : songVideos;
+    return { title: view.artist ? `🎵 ${view.artist}` : "🎵 歌", videos };
+  }
   if (view.type === "continue") {
     return {
       title: "▶ 続きから見る",
@@ -213,7 +217,7 @@ function renderNav() {
     ${item("watched", null, "✓ 視聴済み", count((v) => progress[v.id]?.watched))}
   </div>`;
   for (const c of DATA.categories) {
-    const sources = DATA.sources.filter((s) => s.category === c.id);
+    const sources = DATA.sources.filter((s) => s.category === c.id && s.videos.length);
     if (!sources.length) continue;
     html += `<div class="nav-group"><div class="nav-label">${c.name}</div>
       ${item("category", c.id, `${c.icon} ${c.name}すべて`, count((v) => v.source.category === c.id))}
@@ -281,10 +285,28 @@ function filteredVideos() {
   return { title: info.title, list };
 }
 
+function renderArtistChips() {
+  $("artistChips").hidden = view.type !== "songs";
+  if (view.type !== "songs") return;
+  const counts = new Map();
+  for (const v of songVideos) counts.set(artistOf(v), (counts.get(artistOf(v)) || 0) + 1);
+  const chip = (artist, label, n) =>
+    `<button data-artist="${esc(artist)}" class="${(view.artist || "") === artist ? "active" : ""}">${esc(label)}<span>${n}</span></button>`;
+  $("artistChips").innerHTML = chip("", "すべて", songVideos.length) + [...counts].map(([a, n]) => chip(a, a, n)).join("");
+}
+$("artistChips").addEventListener("click", (e) => {
+  const btn = e.target.closest("button");
+  if (!btn) return;
+  view = { type: "songs", ...(btn.dataset.artist && { artist: btn.dataset.artist }) };
+  store.set("study:view", view);
+  render();
+});
+
 function render() {
   renderNav();
   renderPoints();
   renderWorkout();
+  renderArtistChips();
   const { title, list } = filteredVideos();
   currentList = list;
   $("title").textContent = title;

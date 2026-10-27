@@ -262,6 +262,12 @@ button { cursor: pointer; }
 .workout-log-inline { padding: 6px 12px; border-radius: 8px; border: 0; background: #0b8a68; color: #fff; font-weight: 700; }
 .workout-log-inline.done { background: transparent; color: var(--muted); border: 1px solid var(--line); }
 
+/* 「🎵 歌」の歌手ごとのボタン */
+.artist-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+.artist-chips button { padding: 6px 12px; border-radius: 999px; border: 1px solid var(--line); background: transparent; color: inherit; font-weight: 700; }
+.artist-chips button.active { background: #5c3450; border-color: #5c3450; color: #ffe3f0; }
+.artist-chips button span { opacity: .7; margin-left: 4px; font-variant-numeric: tabular-nums; }
+
 /* 筋トレの画面の上に出す連続記録 */
 .workout-panel { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 24px; margin: 0 0 20px; padding: 16px 20px; border-radius: 14px; border: 2px solid var(--line); }
 .workout-panel.done { border-color: #0b8a68; }

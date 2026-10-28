@@ -1,6 +1,7 @@
 {
   "categories": [
     { "id": "workout", "name": "筋トレ", "icon": "💪" },
+    { "id": "tech", "name": "AI・テック", "icon": "🤖" },
     { "id": "kyoyo", "name": "教養", "icon": "📚" },
     { "id": "programming", "name": "プログラミング", "icon": "💻" },
     { "id": "work", "name": "仕事", "icon": "💼" },
@@ -10,7 +11,7 @@
   ],
   "sources": [
     { "type": "channel", "id": "UC8fTn4DsxlAlql3OXJ8syRA", "name": "海外Yパパ", "category": "kyoyo", "limit": "all", "sleep": true },
-    { "type": "channel", "id": "UCFy2R0BE58JGfJuM5jUd4Yg", "name": "本気AI", "category": "kyoyo", "limit": "all" },
+    { "type": "channel", "id": "UCFy2R0BE58JGfJuM5jUd4Yg", "name": "本気AI", "category": "tech", "limit": "all" },
     { "type": "channel", "id": "UCvgu192Lj45KxguobrEt69g", "name": "Salesforceおたく", "category": "work", "limit": "all" },
     { "type": "channel", "id": "UCgbjcHvWSPQ7en0LI5bMqJw", "name": "パンダの温度", "category": "mental", "limit": 30 },
     { "type": "channel", "id": "UCwWhs_6x42TyRM4Wstoq8HA", "name": "The Daily Show", "category": "entame", "limit": 20 },

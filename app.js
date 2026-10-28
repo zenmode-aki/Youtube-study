@@ -27,6 +27,16 @@ const workoutDays = store.get("study:workout", {});
 Object.assign(prefs, { speed: 1, hideWatched: false, autoNext: true, repeat: "off", shuffle: false, theme: "auto", sleepMin: 90, ...prefs });
 const savePrefs = () => store.set("study:prefs", prefs);
 
+// ---------- AI・テック ----------
+// 海外Yパパの動画のうち、題名が AI・テックの話のものを「🤖 AI・テック」の枠にも並べる（教養の海外Yパパにも残る）
+const TECH_RE = /AI|ＡＩ|人工知能|ChatGPT|GPT|Claude|Gemini|OpenAI|Anthropic|DeepSeek|生成|ロボット|テック|半導体|NVIDIA|エヌビディア|TPU|テスラ|xAI|SpaceX|Apple|iPhone|Google|マイクロソフト|Microsoft|スマホ|デジタル|技術|EV|電気自動車|自動運転|量子|ビットコイン|暗号|プログラ|エンジニア|データセンター|サーバ|サイバー|ハッカー|詐欺システム|プロンプト|バックドア/;
+const yPapa = DATA.sources.find((s) => s.id === "UC8fTn4DsxlAlql3OXJ8syRA");
+if (yPapa) {
+  if (!DATA.categories.some((c) => c.id === "tech")) DATA.categories.splice(0, 0, { id: "tech", name: "AI・テック", icon: "🤖" });
+  DATA.sources.push({ ...yPapa, key: yPapa.key + ":tech", name: "海外Yパパ（AI・テック）", category: "tech", sleep: false, alias: true,
+    videos: yPapa.videos.filter((v) => TECH_RE.test(v.title)) });
+}
+
 // ---------- 動画一覧を1つにまとめる ----------
 const allVideos = [];
 for (const src of DATA.sources) {
@@ -38,13 +48,15 @@ const pctOf = (v) => {
   if (p.watched) return 100;
   return Math.min(100, Math.round(((p.w || 0) / (p.d || v.duration || 1)) * 100));
 };
+// 「すべて」「続きから」「視聴済み」などでは、AI・テックの枠に重ねて並べた分を数えない
+const uniqueVideos = allVideos.filter((v) => !v.source.alias);
 const inProgress = (v) => !progress[v.id]?.watched && pctOf(v) > 0;
 // 歌：「音楽」の分類の動画と、おやすみモードのチャンネル（海外Yパパ）で題名が歌っぽい動画
 const SONG_RE = /歌|ソング|MV|ミュージカル|ラップ|【音楽のみ】/;
 const isSong = (v) => v.source.category === "music" || (v.source.sleep && SONG_RE.test(v.title));
 const artistOf = (v) => v.source.artist || v.source.name;
 const keepNormalSpeed = (v) => isSong(v) || v.source.category === "workout";
-const songVideos = [...new Map(allVideos.filter(isSong).map((v) => [v.id, v])).values()];
+const songVideos = [...new Map(uniqueVideos.filter(isSong).map((v) => [v.id, v])).values()];
 
 // ---------- テーマ（自動 / ライト / ダーク） ----------
 const THEMES = { auto: "🌓 自動", light: "☀️ ライト", dark: "🌙 ダーク" };
@@ -151,17 +163,17 @@ function viewInfo() {
   if (view.type === "continue") {
     return {
       title: "▶ 続きから見る",
-      videos: allVideos.filter(inProgress).sort((a, b) => progress[b.id].at - progress[a.id].at),
+      videos: uniqueVideos.filter(inProgress).sort((a, b) => progress[b.id].at - progress[a.id].at),
     };
   }
   if (view.type === "watched") {
     return {
       title: "✓ 視聴済み",
-      videos: allVideos.filter((v) => progress[v.id]?.watched).sort((a, b) => progress[b.id].at - progress[a.id].at),
+      videos: uniqueVideos.filter((v) => progress[v.id]?.watched).sort((a, b) => progress[b.id].at - progress[a.id].at),
     };
   }
   view = { type: "all" };
-  return { title: "🏠 すべて", videos: [...allVideos].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)) };
+  return { title: "🏠 すべて", videos: [...uniqueVideos].sort((a, b) => b.publishedAt.localeCompare(a.publishedAt)) };
 }
 
 // ---------- 筋トレの連続記録 ----------
@@ -212,9 +224,9 @@ function renderNav() {
       <span class="name">${label}</span><span class="count">${n}</span></button>`;
   };
   let html = `<div class="nav-group">
-    ${item("all", null, "🏠 すべて", allVideos.length)}
-    ${item("continue", null, "▶ 続きから見る", count(inProgress))}
-    ${item("watched", null, "✓ 視聴済み", count((v) => progress[v.id]?.watched))}
+    ${item("all", null, "🏠 すべて", uniqueVideos.length)}
+    ${item("continue", null, "▶ 続きから見る", uniqueVideos.filter(inProgress).length)}
+    ${item("watched", null, "✓ 視聴済み", uniqueVideos.filter((v) => progress[v.id]?.watched).length)}
   </div>`;
   for (const c of DATA.categories) {
     const sources = DATA.sources.filter((s) => s.category === c.id && s.videos.length);
@@ -609,7 +621,7 @@ $("speeds").addEventListener("click", (e) => {
 // 寝ながら聞くものなので、ポイントや視聴%には数えない。
 const SLEEP_MINUTES = [30, 60, 90, 120];
 const FADE_SEC = 5 * 60; // 最後の5分で音量を少しずつ下げる
-const sleepVideos = allVideos.filter((v) => v.source.sleep);
+const sleepVideos = uniqueVideos.filter((v) => v.source.sleep);
 const sleepHistory = store.get("study:sleepHistory", []); // 最近おやすみモードで流した動画ID
 let sleepPlayer = null;
 let sleepQueue = [];

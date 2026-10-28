@@ -36,7 +36,8 @@ function keepFor(src) {
 
 // 再生リストから、ショートを除いた横向きの動画を limit 本ぶん集める
 // （チャンネルは「アップロード動画」の再生リスト UU... を使う）
-async function playlistVideos(playlistId, limit, keep = () => true) {
+// stopBefore：アップロード動画は新しい順なので、この日より古い動画しかないページまで来たら止める（動画が多いチャンネル用）
+async function playlistVideos(playlistId, limit, keep = () => true, stopBefore = "") {
   const max = limit === "all" ? Infinity : limit;
   const videos = [];
   let pageToken = "";
@@ -56,6 +57,7 @@ async function playlistVideos(playlistId, limit, keep = () => true) {
       const v = byId.get(id);
       if (v && keep(v) && !v.live && v.duration > 0 && !(await isShort(v))) videos.push(v);
     }
+    if (stopBefore && details.length && details.every((v) => v.publishedAt < stopBefore)) break;
     pageToken = page.nextPageToken;
   } while (pageToken && videos.length < max);
   return videos.slice(0, max);
@@ -108,7 +110,7 @@ for (const src of config.sources) {
   // type "videos" は、ids に書いた動画を1本ずつ入れる
   const playlistId = src.type === "channel" ? "UU" + src.id.slice(2) : src.id;
   const keep = keepFor(src);
-  const videos = src.type === "videos" ? (await videoDetails(src.ids)).filter(keep) : await playlistVideos(playlistId, src.limit, keep);
+  const videos = src.type === "videos" ? (await videoDetails(src.ids)).filter(keep) : await playlistVideos(playlistId, src.limit, keep, src.type === "channel" ? src.since : "");
   sources.push({ ...src, key: `${src.type}:${src.id}`, videos });
   console.log(`✔ ${src.name}: ${videos.length}本`);
 }

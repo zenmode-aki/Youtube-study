@@ -20,7 +20,7 @@ async function api(path, params) {
   return json;
 }
 
-// config の minViews（再生回数）・since（この日以降）・titleMatch（題名）で絞る。
+// config の minViews（再生回数）・minDuration（秒。広告などの短い動画をのぞく）・since（この日以降）・titleMatch（題名）で絞る。
 // titleMatch: true は「Official Video・MV」などの題名だけ、"any" は題名で絞らない、文字列は正規表現
 const MV_TITLE = "official (music |lyric )?video|\\bMV\\b|music video";
 const NOT_MV = /teaser|trailer|behind the scenes|making|reaction|dance practice|#shorts?\b/i;
@@ -29,6 +29,7 @@ function keepFor(src) {
     : src.titleMatch === true ? new RegExp(MV_TITLE, "i") : null;
   return (v) =>
     (!src.minViews || v.views >= src.minViews) &&
+    (!src.minDuration || v.duration >= src.minDuration) &&
     (!src.since || v.publishedAt >= src.since) &&
     (!re || re.test(v.title)) &&
     (!src.titleMatch || !NOT_MV.test(v.title));

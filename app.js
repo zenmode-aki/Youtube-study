@@ -562,7 +562,7 @@ $("repeatBtn").addEventListener("click", () => {
 
 // スリープタイマー（ふつうのプレイヤー用）：押すたびに なし → 15分 → 30分 → 60分 → 90分。
 // 最後の1分で少しずつ音量を下げて、0分で止まる。リピートと組み合わせて、寝ながら聞ける
-const SLEEP_TIMER_STEPS = [0, 15, 30, 60, 90];
+const SLEEP_TIMER_STEPS = [0, 15, 30, 60, 90, 180, 300, 360];
 const TIMER_FADE_SEC = 60;
 let sleepTimerMin = 0;
 let sleepTimerEndAt = 0;
@@ -619,7 +619,7 @@ $("speeds").addEventListener("click", (e) => {
 // ---------- おやすみモード ----------
 // sleep: true のチャンネル（海外Yパパ）をシャッフルして、タイマーが切れるまで連続再生する。
 // 寝ながら聞くものなので、ポイントや視聴%には数えない。
-const SLEEP_MINUTES = [30, 60, 90, 120];
+const SLEEP_MINUTES = [30, 60, 90, 120, 180, 240, 300, 360];
 const FADE_SEC = 5 * 60; // 最後の5分で音量を少しずつ下げる
 const sleepVideos = uniqueVideos.filter((v) => v.source.sleep);
 const sleepHistory = store.get("study:sleepHistory", []); // 最近おやすみモードで流した動画ID

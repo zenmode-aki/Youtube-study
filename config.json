@@ -1,5 +1,6 @@
 {
   "categories": [
+    { "id": "home", "name": "家・ミニマリスト・デスク", "icon": "🏠" },
     { "id": "workout", "name": "筋トレ", "icon": "💪" },
     { "id": "tech", "name": "AI・テック", "icon": "🤖" },
     { "id": "kyoyo", "name": "教養", "icon": "📚" },
@@ -10,6 +11,17 @@
     { "id": "music", "name": "音楽", "icon": "🎵" }
   ],
   "sources": [
+    { "type": "channel", "id": "UCWVO0OICQ1Q-8JBr_3hGKPw", "name": "日本：ミニマリストしぶ", "category": "home", "limit": "all", "since": "2024-01-01", "minViews": 150000, "minDuration": 180 },
+    { "type": "channel", "id": "UCa-dX9J4WIodZRMtsQlHm9w", "name": "日本：mai minimalism（引っ越し・暮らし）", "category": "home", "limit": "all", "since": "2024-01-01", "minViews": 50000, "minDuration": 180 },
+    { "type": "channel", "id": "UCe8A3KCdzNs92LupuKPeNwQ", "name": "日本：ミニマリストの暮らし（ルームツアー）", "category": "home", "limit": "all", "since": "2024-01-01", "minViews": 30000, "minDuration": 180 },
+    { "type": "channel", "id": "UC2Ku8de18zPkAAdguvdKCiQ", "name": "日本：Roommy ルームツアー", "category": "home", "limit": "all", "since": "2024-01-01", "minViews": 50000, "minDuration": 180 },
+    { "type": "channel", "id": "UCug8drnGb5Q63j2fy_Voocw", "name": "日本：takahiro（デスクツアー）", "category": "home", "limit": "all", "since": "2024-01-01", "minViews": 50000, "minDuration": 180 },
+    { "type": "channel", "id": "UCwCjWSFzdqsNbTNRGD9hbjg", "name": "日本：PREDUCTS（デスク）", "category": "home", "limit": "all", "since": "2024-01-01", "minViews": 50000, "minDuration": 180 },
+    { "type": "channel", "id": "UCJ24N4O0bP7LGLBDvye7oCA", "name": "英語：Matt D'Avella（ミニマリズム）", "category": "home", "limit": "all", "since": "2024-01-01", "minViews": 500000, "minDuration": 180 },
+    { "type": "channel", "id": "UC_zQ777U6YTyatP3P1wi3xw", "name": "英語：NEVER TOO SMALL（小さい家）", "category": "home", "limit": "all", "since": "2024-01-01", "minViews": 300000, "minDuration": 180 },
+    { "type": "channel", "id": "UCY04Nk2nZkUkT4hqf_7suZA", "name": "英語：Apartment Therapy（ルームツアー）", "category": "home", "limit": "all", "since": "2024-01-01", "minViews": 200000, "minDuration": 180 },
+    { "type": "channel", "id": "UCAbAsEZ-0LccTNbl8r-3EaQ", "name": "英語：Scott Yu-Jan（デスク）", "category": "home", "limit": "all", "since": "2024-01-01", "minViews": 300000, "minDuration": 180 },
+    { "type": "channel", "id": "UCoOae5nYA7VqaXzerajD0lg", "name": "英語：Ali Abdaal（家・デスク・生産性）", "category": "home", "limit": "all", "since": "2024-01-01", "minViews": 300000, "minDuration": 180, "titleMatch": "desk|home|house|room|setup|minimal|declutter|apartment|move|moving" },
     { "type": "channel", "id": "UC8fTn4DsxlAlql3OXJ8syRA", "name": "海外Yパパ", "category": "kyoyo", "limit": "all", "sleep": true },
     { "type": "channel", "id": "UCFy2R0BE58JGfJuM5jUd4Yg", "name": "本気AI", "category": "tech", "limit": "all" },
     { "type": "channel", "id": "UCvgu192Lj45KxguobrEt69g", "name": "Salesforceおたく", "category": "work", "limit": "all" },

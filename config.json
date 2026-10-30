@@ -1,6 +1,5 @@
 {
   "categories": [
-    { "id": "home", "name": "家・ミニマリスト・デスク", "icon": "🏠" },
     { "id": "workout", "name": "筋トレ", "icon": "💪" },
     { "id": "tech", "name": "AI・テック", "icon": "🤖" },
     { "id": "kyoyo", "name": "教養", "icon": "📚" },
@@ -8,7 +7,8 @@
     { "id": "work", "name": "仕事", "icon": "💼" },
     { "id": "mental", "name": "メンタル", "icon": "🌿" },
     { "id": "entame", "name": "エンタメ", "icon": "🎉" },
-    { "id": "music", "name": "音楽", "icon": "🎵" }
+    { "id": "music", "name": "音楽", "icon": "🎵" },
+    { "id": "home", "name": "家・ミニマリスト・デスク", "icon": "🏠" }
   ],
   "sources": [
     { "type": "channel", "id": "UCWVO0OICQ1Q-8JBr_3hGKPw", "name": "日本：ミニマリストしぶ", "category": "home", "limit": "all", "since": "2024-01-01", "minViews": 150000, "minDuration": 180 },
@@ -30,6 +30,8 @@
     { "type": "channel", "id": "UC8fTn4DsxlAlql3OXJ8syRA", "name": "海外Yパパ", "category": "kyoyo", "limit": "all", "sleep": true },
     { "type": "channel", "id": "UCFy2R0BE58JGfJuM5jUd4Yg", "name": "本気AI", "category": "tech", "limit": "all" },
     { "type": "channel", "id": "UCvgu192Lj45KxguobrEt69g", "name": "Salesforceおたく", "category": "work", "limit": "all" },
+    { "type": "videos", "id": "salesforce-cli", "name": "Salesforce CLI（sf）入門・公式", "category": "work",
+      "ids": ["2EwZY5UX7fo", "Wmt8OGaUk9E", "WpdL8bAlIbY", "12T0g8rhRLw", "madDyi_EjYY", "MjbslTyZ738"] },
     { "type": "channel", "id": "UCJS9pqu9BzkAMNTmzNMNhvg", "name": "GCP：Google Cloud Tech（公式・英語）", "category": "work", "limit": "all", "since": "2024-01-01", "minViews": 50000, "minDuration": 180 },
     { "type": "channel", "id": "UC8butISFwT-Wl7EV0hUK0BQ", "name": "GCP：freeCodeCamp の講座（英語）", "category": "work", "limit": "all", "since": "2024-01-01", "minViews": 20000, "titleMatch": "Google Cloud|GCP|BigQuery|Vertex AI|Cloud Run|\\bGKE\\b" },
     { "type": "channel", "id": "UCxl3AizmA_6YC4lpeycP8kA", "name": "GCP：Google Cloud Japan（公式・日本語）", "category": "work", "limit": "all", "since": "2024-01-01", "minViews": 3000, "minDuration": 600 },

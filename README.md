@@ -21,7 +21,7 @@
 
 ## Salesforce CLI（sf）の学習
 
-「💼 仕事」内の **Salesforce CLI（sf）入門・公式** は、次の順番で見られる学習セットです。
+「💼 仕事」内の **Salesforce CLI（sf）入門** は、次の順番で見られる学習セットです。
 
 1. *Exploring the sf CLI* — `sf` の全体像（古めの紹介なので、コマンドの細部は現行ドキュメントも確認）
 2. *Salesforce Developer Tools from Scratch* — VS Code、プロジェクト、組織への接続、取得・デプロイの基礎
@@ -31,6 +31,8 @@
 6. *Create a Salesforce Development Project with VS Code* — プロジェクト構造の復習（旧 `sfdx` 表記）
 
 学習は現在の `sf` CLI を基準にする。現在のコマンドは Salesforce の [CLI ドキュメント](https://developer.salesforce.com/docs/platform/salesforce-cli/overview) を正とし、古い動画に出る `sfdx force:...` は概念理解用として、そのまま実行しない。練習は Sandbox か Developer Edition で行い、本番組織へ deploy しない。
+
+日本語で見たいときは **Salesforce CLI（日本語・旧SFDX）** を使う。ここには、開発環境の準備・デプロイと、Dev Hub／Scratch Org を扱う日本語の実践動画を入れている。どちらも旧SFDX時代の内容なので、動画内のコマンドは現行の `sf` CLI ドキュメントで読み替える。
 
 ## 手元で動かす
 

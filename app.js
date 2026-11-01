@@ -314,11 +314,33 @@ $("artistChips").addEventListener("click", (e) => {
   render();
 });
 
+// 学習セットの注意と公式資料。データ内の文字列はHTMLとして解釈しない。
+function renderStudyNote(id, source) {
+  const box = $(id);
+  box.replaceChildren();
+  box.hidden = !source?.studyNote;
+  if (box.hidden) return;
+  const note = document.createElement("p");
+  note.textContent = source.studyNote;
+  box.append(note);
+  for (const ref of source.references || []) {
+    const url = new URL(ref.url);
+    if (url.protocol !== "https:") continue;
+    const link = document.createElement("a");
+    link.href = url.href;
+    link.textContent = ref.title;
+    link.target = "_blank";
+    link.rel = "noopener noreferrer";
+    box.append(link, document.createTextNode(" "));
+  }
+}
+
 function render() {
   renderNav();
   renderPoints();
   renderWorkout();
   renderArtistChips();
+  renderStudyNote("studyNote", view.type === "source" ? DATA.sources.find((s) => s.key === view.id) : null);
   const { title, list } = filteredVideos();
   currentList = list;
   $("title").textContent = title;
@@ -421,6 +443,7 @@ function openPlayer(index) {
   const v = currentList[index];
   if (!v) return;
   $("playerTitle").textContent = v.title;
+  renderStudyNote("playerStudyNote", v.source);
   $("playerMeta").textContent = `${v.source.name} · ${formatViews(v.views)} · ${new Date(v.publishedAt).toLocaleDateString("ja-JP")}`;
   $("prevBtn").disabled = pos <= 0;
   $("nextBtn").disabled = pos >= order.length - 1;
